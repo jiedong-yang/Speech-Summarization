@@ -6,7 +6,7 @@ This little project is to generate a speech summarization on a youtube video. It
 
 2. Feed the transcription to summarization model, generate a summary on whole speech.
 
-3. If running the app encouters a memory crash problem, make the value of variable *sec_per_split* for **_split_audio_** function smaller.
+3. If running the app encouters a memory crash problem, make the value of variable *sec_per_split* in **_split_audio_** function smaller.
 
 The graph below shows the summarization of this [Biden’s speech on official Afghanistan withdrawal, in 3 minutes](https://www.youtube.com/watch?v=DuX4K4eeTz8) video.
 
