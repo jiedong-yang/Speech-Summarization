@@ -1,0 +1,15 @@
+fastapi==0.85.1
+ffmpeg-python==0.2.0
+huggingface-hub==0.9.1
+matplotlib==3.6.1
+pafy==0.5.5
+pandas==1.5.0
+tokenizers==0.12.1
+torch==1.12.1
+tqdm==4.64.1
+transformers==4.22.1
+validators==0.20.0
+whisper @ git+https://github.com/openai/whisper.git@8cf36f3508c9acd341a45eb2364239a3d81458b9
+wordcloud==1.8.2.2
+youtube-dl==2021.12.17
+yt-dlp==2022.10.4
