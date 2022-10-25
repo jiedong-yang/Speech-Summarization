@@ -12,8 +12,8 @@ This project enables me to get a quick grasp on news or speech in an automatic f
 
 The graph below shows the summarization of this [Biden’s speech on official Afghanistan withdrawal, in 3 minutes](https://www.youtube.com/watch?v=DuX4K4eeTz8) video.
 
-![biden speech summary](https://github.com/jiedong-yang/Speech-Summarization/blob/main/results/afgan-test.png)
+![biden speech summary](https://github.com/jiedong-yang/Speech-Summarization/blob/main/results/biden-afgan-test.png)
 
 Summary on [President Biden delivers remarks on his economic plan(13 mins)](https://www.youtube.com/watch?v=nepOSEGHHCQA)
 
-![13 mins speech summary](https://github.com/jiedong-yang/Speech-Summarization/blob/main/results/economic-plan-test.png)
+![13 mins speech summary](https://github.com/jiedong-yang/Speech-Summarization/blob/main/results/biden-eco-plan-test.png)
