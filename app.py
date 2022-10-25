@@ -10,6 +10,16 @@ asr_model = whisper.load_model('base.en')
 summarizer = gr.Interface.load("facebook/bart-large-cnn", src='huggingface')
 
 
+def load_model(name: str):
+    """
+
+    :param name: model options, tiny or base only, for quick inference
+    :return:
+    """
+    asr_model = whisper.load_model(f"{name.lower()}.en")
+    return name
+
+
 def audio_from_url(url, dst_dir='data', name=None, format='wav'):
     """ Download video from url and save the audio from video
 
@@ -26,7 +36,6 @@ def audio_from_url(url, dst_dir='data', name=None, format='wav'):
     os.makedirs(dst_dir, exist_ok=True)
 
     # download audio
-    # video = pafy.new(url)
     path = os.path.join(dst_dir, f"audio.{format}")
     if os.path.exists(path):
         os.remove(path)
@@ -38,9 +47,9 @@ def audio_from_url(url, dst_dir='data', name=None, format='wav'):
 def speech_to_text(audio, beam_size=5, best_of=5, language='en'):
     """ ASR inference with Whisper
 
-    :param audio:
-    :param beam_size:
-    :param best_of:
+    :param audio: filepath
+    :param beam_size: beam search parameter
+    :param best_of: number of best results
     :param language:
     :return:
     """
@@ -79,9 +88,6 @@ def wordcloud_func(text: str, out_path='wordcloud_output.png'):
 
     return out_path
 
-def load_model(name):
-    pass
-
 
 demo = gr.Blocks(title="Speech Summarization")
 
@@ -91,7 +97,9 @@ with demo:
     # demo description
     gr.Markdown("""
     ## Speech Summarization with Whisper
-    This space is intended to summarize a speech, a short one or long one, to save us sometime.
+    This space is intended to summarize a speech, a short one or long one, to save us sometime 
+    (runs faster with local GPU inference). 
+    
     1. Type in a youtube URL or upload an audio file
     2. Generate transcription with Whisper (Currently English Only)
     3. Summarize the transcribed speech
@@ -118,6 +126,9 @@ with demo:
     text = gr.Textbox(label="Transcription", placeholder="transcription")
 
     with gr.Row():
+        model_options = gr.Dropdown(['Tiny', 'Base'], value='Base', label="models")
+        model_options.change(load_model, inputs=model_options, outputs=model_options)
+
         beam_size_slider = gr.Slider(1, 10, value=5, step=1, label="param: beam_size")
         best_of_slider = gr.Slider(1, 10, value=5, step=1, label="param: best_of")
 
