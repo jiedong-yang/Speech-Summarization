@@ -98,7 +98,9 @@ with demo:
     gr.Markdown("""
     ## Speech Summarization with Whisper
     This space is intended to summarize a speech, a short one or long one, to save us sometime 
-    (runs faster with local GPU inference). 
+    (runs faster with local GPU inference). The links provided below:
+    [3 mins speech](https://www.youtube.com/watch?v=DuX4K4eeTz8), 
+    [13 mins speech](https://www.youtube.com/watch?v=nepOSEGHHCQ)
     
     1. Type in a youtube URL or upload an audio file
     2. Generate transcription with Whisper (Currently English Only)
