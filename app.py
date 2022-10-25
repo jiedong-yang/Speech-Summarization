@@ -98,7 +98,7 @@ with demo:
     gr.Markdown("""
     ## Speech Summarization with Whisper
     This space is intended to summarize a speech, a short one or long one, to save us sometime 
-    (runs faster with local GPU inference). The links provided below:
+    (runs faster with GPU inference). Check the example links provided below:
     [3 mins speech](https://www.youtube.com/watch?v=DuX4K4eeTz8), 
     [13 mins speech](https://www.youtube.com/watch?v=nepOSEGHHCQ)
     
