@@ -1,5 +1,6 @@
 fastapi==0.85.1
 ffmpeg-python==0.2.0
+gradio==3.6
 huggingface-hub==0.9.1
 matplotlib==3.6.1
 pafy==0.5.5
