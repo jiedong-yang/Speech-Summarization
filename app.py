@@ -1,6 +1,4 @@
 import os
-import pafy
-import time
 import whisper
 import validators
 import gradio as gr
@@ -28,9 +26,10 @@ def audio_from_url(url, dst_dir='data', name=None, format='wav'):
     os.makedirs(dst_dir, exist_ok=True)
 
     # download audio
-    video = pafy.new(url)
+    # video = pafy.new(url)
     path = os.path.join(dst_dir, f"audio.{format}")
-    os.remove(path)
+    if os.path.exists(path):
+        os.remove(path)
     os.system(f"yt-dlp -f 'ba' -x --audio-format {format} {url}  -o {path} --quiet")
 
     return path
@@ -46,7 +45,7 @@ def speech_to_text(audio, beam_size=5, best_of=5, language='en'):
     :return:
     """
 
-    result = asr_model.transcribe(audio, language=language, beam_size=beam_size, best_of=best_of)
+    result = asr_model.transcribe(audio, language=language, beam_size=beam_size, best_of=best_of, fp16=False)
 
     return result['text']
 
@@ -80,6 +79,9 @@ def wordcloud_func(text: str, out_path='wordcloud_output.png'):
 
     return out_path
 
+def load_model(name):
+    pass
+
 
 demo = gr.Blocks(title="Speech Summarization")
 
@@ -108,6 +110,10 @@ with demo:
 
         url.change(audio_from_url, inputs=url, outputs=speech)
 
+    examples = gr.Examples(examples=["https://www.youtube.com/watch?v=DuX4K4eeTz8",
+                                     "https://www.youtube.com/watch?v=nepOSEGHHCQ"],
+                           inputs=[url])
+
     # ASR
     text = gr.Textbox(label="Transcription", placeholder="transcription")
 
@@ -135,9 +141,6 @@ with demo:
 
     text.change(wordcloud_func, inputs=text, outputs=image)
 
-    examples = gr.Examples(examples=["https://www.youtube.com/watch?v=DuX4K4eeTz8",
-                                     "https://www.youtube.com/watch?v=nepOSEGHHCQ"],
-                           inputs=[url])
 
 if __name__ == '__main__':
-    demo.launch(share=True)
+    demo.launch()
