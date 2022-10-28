@@ -169,8 +169,8 @@ with demo:
     text = gr.Textbox(label="Transcription", placeholder="transcription")
 
     with gr.Row():
-        default_values = dict(model='base', bs=5, bo=5) if torch.cuda.is_available() \
-            else dict(model='tiny', bs=1, bo=1)
+        default_values = dict(model='Base', bs=5, bo=5) if torch.cuda.is_available() \
+            else dict(model='Tiny', bs=1, bo=1)
         model_options = gr.Dropdown(['Tiny', 'Base'], value=default_values['model'], label="models")
         model_options.change(load_model, inputs=model_options, outputs=model_options)
 
