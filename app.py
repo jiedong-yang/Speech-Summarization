@@ -1,13 +1,21 @@
 import os
+import re
 import whisper
 import validators
 import gradio as gr
 
+import nltk
+nltk.download()
+
 from wordcloud import WordCloud, STOPWORDS
+
+from scipy.io.wavfile import write
+from espnet2.bin.tts_inference import Text2Speech
 
 # load whisper model for ASR and BART for summarization
 asr_model = whisper.load_model('base.en')
 summarizer = gr.Interface.load("facebook/bart-large-cnn", src='huggingface')
+tts_model = Text2Speech.from_pretrained("espnet/kan-bayashi_ljspeech_joint_finetune_conformer_fastspeech2_hifigan")
 
 
 def load_model(name: str):
@@ -16,6 +24,7 @@ def load_model(name: str):
     :param name: model options, tiny or base only, for quick inference
     :return:
     """
+    global asr_model
     asr_model = whisper.load_model(f"{name.lower()}.en")
     return name
 
@@ -50,8 +59,8 @@ def speech_to_text(audio, beam_size=5, best_of=5, language='en'):
     :param audio: filepath
     :param beam_size: beam search parameter
     :param best_of: number of best results
-    :param language:
-    :return:
+    :param language: Currently English only
+    :return: transcription
     """
 
     result = asr_model.transcribe(audio, language=language, beam_size=beam_size, best_of=best_of, fp16=False)
@@ -63,12 +72,12 @@ def text_summarization(text):
     return summarizer(text)
 
 
-def wordcloud_func(text: str, out_path='wordcloud_output.png'):
+def wordcloud_func(text: str, out_path='data/wordcloud_output.png'):
     """ generate wordcloud based on text
 
-    :param text:
-    :param out_path:
-    :return:
+    :param text: transcription
+    :param out_path: filepath
+    :return: filepath
     """
 
     if len(text) == 0:
@@ -85,6 +94,37 @@ def wordcloud_func(text: str, out_path='wordcloud_output.png'):
 
     wc.generate(text)
     wc.to_file(out_path)
+
+    return out_path
+
+
+def normalize_dollars(text):
+    """ text normalization for '$'
+
+    :param text:
+    :return:
+    """
+
+    def expand_dollars(m):
+        match = m.group(1)
+        parts = match.split(' ')
+        parts.append('dollars')
+        return ' '.join(parts)
+
+    units = ['hundred', 'thousand', 'million', 'billion', 'trillion']
+    _dollars_re = re.compile(fr"\$([0-9\.\,]*[0-9]+ (?:{'|'.join(units)}))")
+
+    return re.sub(_dollars_re, expand_dollars, text)
+
+
+def text_to_speech(text: str, out_path="data/short_speech.wav"):
+
+    # espnet tts model process '$1.4 trillion' as 'one point four dollar trillion'
+    # use this function to fix this issue
+    text = normalize_dollars(text)
+
+    output = tts_model(text)
+    write(out_path, 22050, output['wav'].numpy())
 
     return out_path
 
@@ -149,8 +189,13 @@ with demo:
         sum_btn = gr.Button("Summarize")
         sum_btn.click(text_summarization, inputs=text, outputs=summary)
 
-    # wordcloud
-    image = gr.Image(label="wordcloud", show_label=False).style(height=400, width=400)
+    with gr.Row():
+        # wordcloud
+        image = gr.Image(label="wordcloud", show_label=False).style(height=400, width=400)
+        with gr.Column():
+            tts = gr.Audio(label="Short Speech", type="filepath")
+            tts_btn = gr.Button("Read Summary")
+            tts_btn.click(text_to_speech, inputs=summary, outputs=tts)
 
     text.change(wordcloud_func, inputs=text, outputs=image)
 

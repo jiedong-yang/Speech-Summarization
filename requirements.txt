@@ -14,3 +14,4 @@ whisper @ git+https://github.com/openai/whisper.git@8cf36f3508c9acd341a45eb23642
 wordcloud==1.8.2.2
 youtube-dl==2021.12.17
 yt-dlp==2022.10.4
+espnet
