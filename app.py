@@ -1,11 +1,9 @@
 import os
 import re
+import torch
 import whisper
 import validators
 import gradio as gr
-
-import nltk
-nltk.download()
 
 from wordcloud import WordCloud, STOPWORDS
 
@@ -143,9 +141,12 @@ with demo:
     [13 mins speech](https://www.youtube.com/watch?v=nepOSEGHHCQ)
     
     1. Type in a youtube URL or upload an audio file
-    2. Generate transcription with Whisper (Currently English Only)
+    2. Generate transcription with Whisper (English Only)
     3. Summarize the transcribed speech
-    4. A little wordcloud for you as well
+    4. Generate summary's speech with ESPNet model
+    
+    model references:
+    - [Whisper](https://github.com/openai/whisper), [ESPNet](https://github.com/espnet/espnet_model_zoo)
     """)
 
     # data preparation
@@ -168,11 +169,13 @@ with demo:
     text = gr.Textbox(label="Transcription", placeholder="transcription")
 
     with gr.Row():
-        model_options = gr.Dropdown(['Tiny', 'Base'], value='Base', label="models")
+        default_values = dict(model='base', bs=5, bo=5) if torch.cuda.is_available() \
+            else dict(model='tiny', bs=1, bo=1)
+        model_options = gr.Dropdown(['Tiny', 'Base'], value=default_values['model'], label="models")
         model_options.change(load_model, inputs=model_options, outputs=model_options)
 
-        beam_size_slider = gr.Slider(1, 10, value=5, step=1, label="param: beam_size")
-        best_of_slider = gr.Slider(1, 10, value=5, step=1, label="param: best_of")
+        beam_size_slider = gr.Slider(1, 10, value=default_values['bs'], step=1, label="param: beam_size")
+        best_of_slider = gr.Slider(1, 10, value=default_values['bo'], step=1, label="param: best_of")
 
     with gr.Row():
         asr_clr_btn = gr.Button("clear")
