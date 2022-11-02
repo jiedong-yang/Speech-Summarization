@@ -163,7 +163,7 @@ with demo:
 
     examples = gr.Examples(examples=["https://www.youtube.com/watch?v=DuX4K4eeTz8",
                                      "https://www.youtube.com/watch?v=nepOSEGHHCQ"],
-                           inputs=[url])
+                           inputs=[url], cache_examples=True)
 
     # ASR
     text = gr.Textbox(label="Transcription", placeholder="transcription")
