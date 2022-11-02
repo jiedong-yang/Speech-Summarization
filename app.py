@@ -203,7 +203,7 @@ with demo:
         ],
         inputs=url, outputs=text,
         fn=lambda x: speech_to_text(audio_from_url(x)),
-        cache_examples=True, preprocess=False
+        cache_examples=True
     )
 
     gr.HTML(footer_html)
