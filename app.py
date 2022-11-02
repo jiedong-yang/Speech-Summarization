@@ -13,7 +13,8 @@ from espnet2.bin.tts_inference import Text2Speech
 from utils import *
 
 # load whisper model for ASR and BART for summarization
-asr_model = whisper.load_model('base.en')
+default_model = 'base.en' if torch.cuda.is_available() else 'tiny.en'
+asr_model = whisper.load_model(default_model)
 summarizer = gr.Interface.load("facebook/bart-large-cnn", src='huggingface')
 tts_model = Text2Speech.from_pretrained("espnet/kan-bayashi_ljspeech_joint_finetune_conformer_fastspeech2_hifigan")
 
@@ -164,13 +165,11 @@ with demo:
     text = gr.Textbox(label="Transcription", placeholder="transcription")
 
     with gr.Row():
-        default_values = dict(model='Base.en', bs=5, bo=5) if torch.cuda.is_available() \
-            else dict(model='Tiny.en', bs=1, bo=1)
-        model_options = gr.Dropdown(['Tiny.en', 'Base.en'], value=default_values['model'], label="models")
+        model_options = gr.Dropdown(['Tiny.en', 'Base.en'], value=default_model, label="models")
         model_options.change(load_model, inputs=model_options, outputs=model_options)
 
-        beam_size_slider = gr.Slider(1, 10, value=default_values['bs'], step=1, label="param: beam_size")
-        best_of_slider = gr.Slider(1, 10, value=default_values['bo'], step=1, label="param: best_of")
+        beam_size_slider = gr.Slider(1, 10, value=5, step=1, label="param: beam_size")
+        best_of_slider = gr.Slider(1, 10, value=5, step=1, label="param: best_of")
 
     with gr.Row():
         asr_clr_btn = gr.Button("clear")
