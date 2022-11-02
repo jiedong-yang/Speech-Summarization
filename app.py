@@ -197,10 +197,14 @@ with demo:
 
     text.change(wordcloud_func, inputs=text, outputs=image)
 
-    examples = gr.Examples(examples=["https://www.youtube.com/watch?v=DuX4K4eeTz8",
-                                     "https://www.youtube.com/watch?v=nepOSEGHHCQ"],
-                           fn=lambda x: speech_to_text(audio_from_url(x)),
-                           inputs=url, outputs=text, cache_examples=True)
+    examples = gr.Examples(examples=[
+            "https://www.youtube.com/watch?v=DuX4K4eeTz8",
+            "https://www.youtube.com/watch?v=nepOSEGHHCQ"
+        ],
+        inputs=url, outputs=text,
+        fn=lambda x: speech_to_text(audio_from_url(x)),
+        cache_examples=True, preprocess=False
+    )
 
     gr.HTML(footer_html)
 
