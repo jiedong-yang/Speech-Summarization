@@ -3,7 +3,7 @@
 This project is to generate a summarization of a youtube video or a given speech. It includes three distinct models:
 [Whisper](https://github.com/openai/whisper) for robust automatic speech recognition, 
 [BART (large-sized) model](https://github.com/facebookresearch/fairseq/tree/main/examples/bart) for text summarization, 
-[Conformer from ESPNet]("https://github.com/espnet/espnet_model_zoo) for LJSpeech TTS. 
+[Conformer from ESPNet](https://github.com/espnet/espnet_model_zoo) for LJSpeech TTS. 
 
 This project enables me to get a quick grasp on news or speech in an automatic fashion.
 
