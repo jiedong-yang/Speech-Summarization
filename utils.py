@@ -1,3 +1,12 @@
+demo_css = """
+    .footer {
+                margin-bottom: 40px;
+                margin-top: 45px;
+                text-align: center;
+                border-bottom: 1px solid #e5e5e5;
+            }
+"""
+
 footer_html = """
 <div class="footer">
         <p>Whisper by <a href="https://github.com/openai/whisper" 

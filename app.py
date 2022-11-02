@@ -129,7 +129,7 @@ def text_to_speech(text: str, out_path="data/short_speech.wav"):
     return out_path
 
 
-demo = gr.Blocks(title="Speech Summarization")
+demo = gr.Blocks(css=demo_css, title="Speech Summarization")
 
 demo.encrypt = False
 
