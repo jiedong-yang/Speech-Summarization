@@ -10,6 +10,8 @@ from wordcloud import WordCloud, STOPWORDS
 from scipy.io.wavfile import write
 from espnet2.bin.tts_inference import Text2Speech
 
+from utils import *
+
 # load whisper model for ASR and BART for summarization
 asr_model = whisper.load_model('base.en')
 summarizer = gr.Interface.load("facebook/bart-large-cnn", src='huggingface')
@@ -23,7 +25,7 @@ def load_model(name: str):
     :return:
     """
     global asr_model
-    asr_model = whisper.load_model(f"{name.lower()}.en")
+    asr_model = whisper.load_model(f"{name.lower()}")
     return name
 
 
@@ -143,10 +145,7 @@ with demo:
     1. Type in a youtube URL or upload an audio file
     2. Generate transcription with Whisper (English Only)
     3. Summarize the transcribed speech
-    4. Generate summary's speech with ESPNet model
-    
-    model references:
-    - [Whisper](https://github.com/openai/whisper), [ESPNet](https://github.com/espnet/espnet_model_zoo)
+    4. Generate summary speech with the ESPNet model
     """)
 
     # data preparation
@@ -161,17 +160,13 @@ with demo:
 
         url.change(audio_from_url, inputs=url, outputs=speech)
 
-    examples = gr.Examples(examples=["https://www.youtube.com/watch?v=DuX4K4eeTz8",
-                                     "https://www.youtube.com/watch?v=nepOSEGHHCQ"],
-                           inputs=[url], cache_examples=True)
-
     # ASR
     text = gr.Textbox(label="Transcription", placeholder="transcription")
 
     with gr.Row():
-        default_values = dict(model='Base', bs=5, bo=5) if torch.cuda.is_available() \
-            else dict(model='Tiny', bs=1, bo=1)
-        model_options = gr.Dropdown(['Tiny', 'Base'], value=default_values['model'], label="models")
+        default_values = dict(model='Base.en', bs=5, bo=5) if torch.cuda.is_available() \
+            else dict(model='Tiny.en', bs=1, bo=1)
+        model_options = gr.Dropdown(['Tiny.en', 'Base.en'], value=default_values['model'], label="models")
         model_options.change(load_model, inputs=model_options, outputs=model_options)
 
         beam_size_slider = gr.Slider(1, 10, value=default_values['bs'], step=1, label="param: beam_size")
@@ -201,6 +196,13 @@ with demo:
             tts_btn.click(text_to_speech, inputs=summary, outputs=tts)
 
     text.change(wordcloud_func, inputs=text, outputs=image)
+
+    examples = gr.Examples(examples=["https://www.youtube.com/watch?v=DuX4K4eeTz8",
+                                     "https://www.youtube.com/watch?v=nepOSEGHHCQ"],
+                           fn=lambda x: speech_to_text(audio_from_url(x)),
+                           inputs=url, outputs=text, cache_examples=True)
+
+    gr.HTML(footer_html)
 
 
 if __name__ == '__main__':
