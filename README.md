@@ -5,6 +5,8 @@ This project is to generate a summarization of a youtube video or a given speech
 [BART (large-sized) model](https://github.com/facebookresearch/fairseq/tree/main/examples/bart) for text summarization, 
 [Conformer from ESPNet](https://github.com/espnet/espnet_model_zoo) for LJSpeech TTS. 
 
+[Demo page](https://huggingface.co/spaces/jiedong-yang/Speech-Summarization-with-Whisper)
+
 This project enables me to get a quick grasp on news or speech in an automatic fashion.
 
 1. Download the audio from YouTube in **.wav** format
